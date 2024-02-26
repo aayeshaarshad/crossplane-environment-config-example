@@ -11,8 +11,8 @@ data:
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: EnvironmentConfig
 metadata:
-  name: dev-ns
+  name: devtest-ns
   labels:
-    environment: dev
+    environment: devtest
 data:
-  namespace: "dev"
+  namespace: "devtest"

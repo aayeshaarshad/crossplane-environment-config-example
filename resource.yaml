@@ -1,0 +1,10 @@
+apiVersion: crossplane.example.io/v1
+kind: EnvironmentExample
+metadata:
+  name: example-environment
+spec:
+  parameters:
+    customer:
+      name: "example-customer"
+      # Environment type. Values: devtest, prod
+      environment: "devtest"
