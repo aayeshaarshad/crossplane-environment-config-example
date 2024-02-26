@@ -1,0 +1,18 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: EnvironmentConfig
+metadata:
+  name: prod-ns
+  labels:
+    environment: prod
+data:
+  namespace: "prod"
+
+---
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: EnvironmentConfig
+metadata:
+  name: dev-ns
+  labels:
+    environment: dev
+data:
+  namespace: "dev"

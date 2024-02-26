@@ -1,0 +1,84 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xenvironmentexamples.crossplane.example.io
+spec:
+  group: crossplane.example.io
+  names:
+    kind: XEnvironmentExample
+    plural: xenvironmentexamples
+  claimNames:
+    kind: EnvironmentExample
+    plural: environmentexamples
+  versions:
+  - name: v1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              parameters:
+                type: object
+                properties:
+                  customer:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      environment:
+                        type: string
+                        enum:
+                          - devtest
+                          - prod
+                    required:
+                    - name
+                    - environment
+                required:
+                - customer
+
+
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: environmentexamples
+  labels:
+    crossplane.io/xrd: xenvironmentexamples.crossplane.example.io
+spec:
+  compositeTypeRef:
+    apiVersion: crossplane.example.io/v1
+    kind: XEnvironmentExample
+
+  environment:
+    environmentConfigs:
+    - type: Selector
+      selector: 
+        matchLabels:
+        - key: environment
+          type: FromCompositeFieldPath
+          valueFromFieldPath: spec.parameters.customer.environment
+          
+resources:
+  - name: customer-account
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      metadata:
+        name: test
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name:
+        providerConfigRef:
+          name: kubernetes-provider
+    patches:
+    - type: FromEnvironmentFieldPath
+      fromFieldPath: namespace
+      toFieldPath: spec.forProvider.manifest.metadata.name
